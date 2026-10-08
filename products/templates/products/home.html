@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shop products from multiple stores in one place with MultiMart.">
+    <title>MultiMart | Your Local Multi-Store Marketplace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/account-menu.css' %}">
+</head>
+<body id="top">
+    <header class="site-header">
+        <nav class="nav-shell" aria-label="Main navigation">
+            <a href="{% url 'home' %}" class="brand" aria-label="MultiMart home">
+                <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 28" fill="none"><path d="M3 23 7 7l9 10 9-10 4 16" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="5" r="3" fill="#54D4C0"/><circle cx="25" cy="5" r="3" fill="#54D4C0"/></svg></span>
+                <span>MultiMart</span>
+            </a>
+
+            <div class="desktop-links">
+                <a class="nav-link is-current" href="#top">Home</a>
+                <a class="nav-link" href="#products">Shop</a>
+                <a class="nav-link" href="#local-sellers">Stores</a>
+                <a class="nav-link" href="#category-navigation">Categories</a>
+            </div>
+
+            <form class="nav-search" data-catalog-search role="search" method="get" action="{% url 'home' %}">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
+                <label class="visually-hidden" for="nav-search">Search products, stores and more</label>
+                <input id="nav-search" name="q" type="search" value="{{ search_query }}" placeholder="Search for products, stores and more..." data-search-input>
+                <button type="submit" class="visually-hidden">Search</button>
+            </form>
+
+            <div class="nav-actions">
+                <a class="cart-link" href="{% url 'cart' %}" aria-label="Shopping cart">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+                    {% if user.is_authenticated and user.cart %}<span class="cart-count">{{ user.cart.items.count }}</span>{% else %}<span class="cart-count">0</span>{% endif %}
+                </a>
+                {% if user.is_authenticated %}
+                    {% include 'accounts/_account_menu.html' %}
+                {% else %}
+                    <a class="login-link" href="{% url 'login' %}">Login</a>
+                    <a class="signup-button" href="{% url 'register' %}">Sign Up</a>
+                {% endif %}
+            </div>
+
+            <button class="mobile-search-toggle" type="button" aria-label="Search products" data-focus-search><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg></button>
+
+            <details class="mobile-menu">
+                <summary aria-label="Open navigation menu"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary>
+                <div class="mobile-menu-panel">
+                    <a href="#top">Home</a><a href="#products">Shop</a><a href="#local-sellers">Stores</a><a href="#category-navigation">Categories</a>
+                    {% if user.is_authenticated %}<a href="{% url 'profile' %}">My Profile</a><a href="{% url 'logout' %}">Log out</a>{% else %}<a href="{% url 'login' %}">Login</a><a href="{% url 'register' %}">Sign Up</a>{% endif %}
+                    <a href="{% url 'cart' %}">Shopping Cart</a>
+                </div>
+            </details>
+        </nav>
+    </header>
+
+    <main>
+        {% if messages %}<div class="message-wrap" role="status">{% for message in messages %}<p class="site-message">{{ message }}</p>{% endfor %}</div>{% endif %}
+        <section class="hero-section" aria-labelledby="hero-title">
+            <div class="hero-shell">
+                <div class="hero-copy">
+                    <p class="eyebrow">Your local multi-store marketplace</p>
+                    <h1 id="hero-title">More Shops. More Choices.<br><span>All in One Place.</span></h1>
+                    <p class="hero-description">Discover products from multiple sellers, add to your cart, and pay for everything with a single, secure checkout.</p>
+                    <form class="hero-search" data-catalog-search role="search" method="get" action="{% url 'home' %}">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
+                        <label class="visually-hidden" for="hero-search">Search products</label>
+                        <input id="hero-search" name="q" type="search" value="{{ search_query }}" placeholder="Search for products, stores and more..." data-search-input>
+                        <button type="submit">Search</button>
+                    </form>
+                    <div class="trust-points" aria-label="Marketplace benefits"><span><b aria-hidden="true">✓</b>Multiple Sellers</span><span><b aria-hidden="true">✓</b>One Cart</span><span><b aria-hidden="true">✓</b>Secure Payment</span></div>
+                </div>
+
+                <div class="hero-art" aria-label="A MultiMart shopping bag with products from local shops">
+                    <span class="art-sun" aria-hidden="true"></span>
+                    <span class="art-orbit art-orbit-one" aria-hidden="true"></span><span class="art-orbit art-orbit-two" aria-hidden="true"></span>
+                    <div class="art-note" aria-hidden="true">Different stores.<br>One cart.<br>One payment.</div>
+                    {% for category in categories %}
+                        {% for product in category.products.all|slice:":1" %}
+                            <div class="floating-product floating-product-{{ forloop.parentloop.counter }}" aria-hidden="true">{% if product.image.name %}<img src="{{ product.image.url }}" alt="" onerror="this.onerror=null; this.src='{% static 'images/product-placeholder.svg' %}';">{% else %}<img src="{% static 'images/product-placeholder.svg' %}" alt="">{% endif %}</div>
+                        {% endfor %}
+                    {% endfor %}
+                    <div class="shopping-bag" aria-hidden="true">
+                        <span class="bag-handle"></span>
+                        <span class="bag-logo"><svg viewBox="0 0 32 28" fill="none"><path d="M3 23 7 7l9 10 9-10 4 16" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <strong>MultiMart</strong>
+                        <small>Your local multi-store<br>marketplace</small>
+                    </div>
+                    <span class="art-leaf leaf-one" aria-hidden="true"></span><span class="art-leaf leaf-two" aria-hidden="true"></span>
+                </div>
+            </div>
+        </section>
+
+        <section id="category-navigation" class="category-strip" aria-label="Shop by category">
+            <div class="category-scroll">
+                <button type="button" class="category-choice is-selected" data-category-filter="all" aria-pressed="true">
+                    <span class="category-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span><span>All Categories</span>
+                </button>
+                {% for category in categories %}
+                    <button type="button" class="category-choice" data-category-filter="{{ category.id }}" aria-pressed="false">
+                        <span class="category-icon">
+                            {% if category.name == 'Audio' %}<svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="12" width="4" height="8" rx="2"/><rect x="17" y="12" width="4" height="8" rx="2"/></svg>
+                            {% elif category.name == 'Wearables' %}<svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><rect x="7" y="6" width="10" height="12" rx="3"/><path d="m9 6 1-3h4l1 3m-6 12 1 3h4l1-3M12 10v4l2 1"/></svg>
+                            {% elif category.name == 'Computers' or category.name == 'Electronics' %}<svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+                            {% else %}<svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 17h2"/></svg>{% endif %}
+                        </span><span>{{ category.name }}</span>
+                    </button>
+                {% endfor %}
+                <a class="category-choice category-more" href="#products"><span class="category-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span><span>More</span></a>
+            </div>
+        </section>
+
+        <section class="benefits-section" aria-label="Marketplace benefits">
+            <div class="benefits-panel">
+                <article class="benefit-item"><span class="benefit-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3 7h12v11H3zM15 11h4l3 3v4h-7z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg></span><div><h2>Multiple Sellers</h2><p>Shop from trusted local sellers and popular brands.</p></div></article>
+                <article class="benefit-item"><span class="benefit-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M9 9h8m-4-4 4 4-4 4"/></svg></span><div><h2>One Cart, One Checkout</h2><p>Add items from different stores and pay once.</p></div></article>
+                <article class="benefit-item"><span class="benefit-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v5c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><div><h2>Secure Payments</h2><p>Multiple payment options with trusted gateways.</p></div></article>
+                <article class="benefit-item"><span class="benefit-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="12" width="4" height="8" rx="2"/><rect x="17" y="12" width="4" height="8" rx="2"/><path d="M17 20c-1 2-3 2-5 2"/></svg></span><div><h2>Dedicated Support</h2><p>We're here to help, whenever you need us.</p></div></article>
+            </div>
+        </section>
+
+        <section id="products" class="products-section" aria-labelledby="products-title">
+            <div class="section-heading"><div><h2 id="products-title">Featured Products</h2><p>Top picks from our trusted sellers</p></div><a href="#category-navigation" class="view-all">View All <span aria-hidden="true">→</span></a></div>
+            <p class="search-empty" data-search-empty hidden>No products match that search.</p>
+            <div class="product-grid" data-product-grid>
+                {% for category in categories %}
+                    {% for product in category.products.all %}
+                        <article class="product-card" data-product-card data-category="{{ category.id }}" data-search="{{ product.name }}">
+                            <a href="{% url 'product-detail' product.id %}" class="product-image-link" aria-label="View {{ product.name }}">
+                                <div class="product-image">{% if product.image.name %}<img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" onerror="this.onerror=null; this.src='{% static 'images/product-placeholder.svg' %}';">{% else %}<img src="{% static 'images/product-placeholder.svg' %}" alt="No image available for {{ product.name }}" loading="lazy">{% endif %}<span class="wishlist-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M20.8 8.7c0 5.2-8.8 10.1-8.8 10.1S3.2 13.9 3.2 8.7A4.5 4.5 0 0 1 12 6.6a4.5 4.5 0 0 1 8.8 2.1Z"/></svg></span></div>
+                            </a>
+                            <div class="product-info">
+                                <a class="store-name" href="{% url 'store-profile' product.store.id %}" aria-label="Visit {{ product.store.name }} store profile">{{ product.store.name }}</a>
+                                <a href="{% url 'product-detail' product.id %}" class="product-name">{{ product.name }}</a>
+                                <p class="product-price">Rs. {{ product.price|floatformat:0 }}</p>
+                                <div class="product-bottom"><span class="product-stock">{% if user.is_authenticated and product.store.owner_id == user.id %}Your product{% elif product.stock > 0 %}In stock{% else %}Out of stock{% endif %}</span>
+                                    {% if not user.is_authenticated or product.store.owner_id != user.id %}{% if product.stock > 0 %}<form method="post" action="{% url 'add-to-cart' product.id %}">{% csrf_token %}<input type="hidden" name="quantity" value="1"><button class="add-cart" type="submit" aria-label="Add {{ product.name }} to cart"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></button></form>{% else %}<span class="add-cart is-disabled" aria-label="Out of stock"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></span>{% endif %}{% endif %}
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                {% endfor %}
+                {% for product in uncategorized_products %}
+                    <article class="product-card" data-product-card data-category="uncategorized" data-search="{{ product.name }}">
+                        <a href="{% url 'product-detail' product.id %}" class="product-image-link" aria-label="View {{ product.name }}"><div class="product-image">{% if product.image.name %}<img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" onerror="this.onerror=null; this.src='{% static 'images/product-placeholder.svg' %}';">{% else %}<img src="{% static 'images/product-placeholder.svg' %}" alt="No image available for {{ product.name }}" loading="lazy">{% endif %}<span class="wishlist-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M20.8 8.7c0 5.2-8.8 10.1-8.8 10.1S3.2 13.9 3.2 8.7A4.5 4.5 0 0 1 12 6.6a4.5 4.5 0 0 1 8.8 2.1Z"/></svg></span></div></a>
+                        <div class="product-info"><a class="store-name" href="{% url 'store-profile' product.store.id %}" aria-label="Visit {{ product.store.name }} store profile">{{ product.store.name }}</a><a href="{% url 'product-detail' product.id %}" class="product-name">{{ product.name }}</a><p class="product-price">Rs. {{ product.price|floatformat:0 }}</p><div class="product-bottom"><span class="product-stock">{% if user.is_authenticated and product.store.owner_id == user.id %}Your product{% elif product.stock > 0 %}In stock{% else %}Out of stock{% endif %}</span>{% if not user.is_authenticated or product.store.owner_id != user.id %}{% if product.stock > 0 %}<form method="post" action="{% url 'add-to-cart' product.id %}">{% csrf_token %}<input type="hidden" name="quantity" value="1"><button class="add-cart" type="submit" aria-label="Add {{ product.name }} to cart"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></button></form>{% else %}<span class="add-cart is-disabled" aria-label="Out of stock"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></span>{% endif %}{% endif %}</div></div>
+                    </article>
+                {% endfor %}
+                {% if not categories and not uncategorized_products %}<p class="empty-products">Products from our sellers will appear here.</p>{% endif %}
+            </div>
+        </section>
+
+        <section class="promo-section" aria-label="Explore MultiMart">
+            <a id="local-sellers" href="#category-navigation" class="promo-card promo-local"><div class="promo-copy"><h2>Shop from Local Sellers</h2><p>Support local businesses and find unique products you won't see everywhere.</p><span class="promo-button">Explore Stores <span aria-hidden="true">→</span></span></div><div class="local-illustration" aria-hidden="true"><span class="shop-awning"></span><span class="shop-window">LOCAL<br>SHOPS</span><span class="shop-plant plant-left"></span><span class="shop-plant plant-right"></span></div></a>
+            <a href="#products" class="promo-card promo-deals"><div class="promo-copy"><h2>Best Deals<br>Every Day</h2><p>Great products. Better prices.</p><span class="promo-button">View Deals <span aria-hidden="true">→</span></span></div><div class="deal-art" aria-hidden="true"><span>%</span><i></i><b></b></div></a>
+            <a href="#category-navigation" class="promo-card promo-essentials"><div class="promo-copy"><h2>Everyday Essentials</h2><p>From groceries to home needs, we've got you covered.</p><span class="promo-button">Shop Now <span aria-hidden="true">→</span></span></div><div class="grocery-art" aria-hidden="true"><span class="grocery-leaf leaf-a"></span><span class="grocery-leaf leaf-b"></span><span class="grocery-produce produce-a"></span><span class="grocery-produce produce-b"></span><span class="grocery-produce produce-c"></span><span class="grocery-crate"></span></div></a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-main">
+            <div class="footer-brand"><a href="{% url 'home' %}" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 28" fill="none"><path d="M3 23 7 7l9 10 9-10 4 16" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="5" r="3" fill="#54D4C0"/><circle cx="25" cy="5" r="3" fill="#54D4C0"/></svg></span><span>MultiMart</span></a><p class="footer-tagline">Your local multi-store marketplace</p></div>
+            <div class="footer-column"><h2>Quick Links</h2><a href="#top">Home</a><a href="#products">Shop</a><a href="#local-sellers">Stores</a><a href="#category-navigation">Categories</a></div>
+            <div class="footer-column"><h2>Customer Service</h2><a href="#customer-service">Help Center</a><a href="#customer-service">Shipping &amp; Delivery</a><a href="#customer-service">Returns &amp; Refunds</a><a href="#customer-service">Contact Us</a></div>
+            <div class="footer-column footer-social"><h2>Follow Us</h2><div class="social-links"><a href="#social" aria-label="Facebook">f</a><a href="#social" aria-label="Instagram">◎</a><a href="#social" aria-label="YouTube">▶</a><a href="#social" aria-label="X">𝕏</a></div></div>
+            <div class="footer-newsletter" id="newsletter"><h2>Subscribe to our newsletter</h2><p>Get the latest deals and updates.</p><form data-newsletter-form><label class="visually-hidden" for="newsletter-email">Your email address</label><input id="newsletter-email" type="email" placeholder="Your email address" required><button type="submit" aria-label="Subscribe"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="m4 12 16-7-5 15-3-6-8-2Zm8 2 8-9"/></svg></button></form><p class="newsletter-note" data-newsletter-note aria-live="polite"></p></div>
+        </div>
+        <div class="footer-bottom"><p>© 2026 MultiMart. All rights reserved.</p><div><a href="#category-navigation">Shop Local</a><span>·</span><a href="#local-sellers">Support Local</a><span>·</span><span>Build a Stronger Community</span></div></div>
+    </footer>
+    <script src="{% static 'js/home.js' %}?v=2" defer></script>
+</body>
+</html>

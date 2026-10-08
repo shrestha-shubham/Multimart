@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | MultiMart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#f8f7f2] text-slate-800 antialiased">
+    <header class="sticky top-0 z-40 border-b border-emerald-900/30 bg-[#00695c]">
+        <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8" aria-label="Main navigation">
+            <a href="/" class="flex items-center gap-2 text-lg font-extrabold tracking-tight text-white" aria-label="MultiMart home"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15 text-sm text-white" aria-hidden="true">M</span>MultiMart</a>
+            <div class="hidden items-center gap-7 sm:flex"><a href="/" class="text-sm font-semibold text-emerald-50 hover:text-white">Home</a><a href="/#categories" class="text-sm font-semibold text-emerald-50 hover:text-white">Categories</a></div>
+            <div class="flex items-center gap-2"><a href="/cart/" aria-current="page" class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-xs font-bold text-[#075e52]"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"></path><circle cx="10" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg>Cart</a><a href="{% url 'logout' %}" class="rounded-lg px-3 py-2 text-xs font-semibold text-emerald-50 hover:bg-white/10">Log out</a></div>
+        </nav>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-11 lg:px-8">
+        <div class="mb-7"><p class="text-[10px] font-bold uppercase tracking-[.16em] text-[#9a7727]">Your marketplace basket</p><h1 class="mt-1 text-3xl font-extrabold tracking-tight text-[#064e45]">Your Cart</h1><p class="mt-2 text-sm text-slate-500">Review products from your selected stores.</p></div>
+        {% if messages %}<div class="mb-5 space-y-2" role="status">{% for message in messages %}<p class="rounded-lg border border-[#ead9a7] bg-[#fbf6e9] px-4 py-3 text-sm text-[#765d25]">{{ message }}</p>{% endfor %}</div>{% endif %}
+
+        <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
+            <section aria-label="Cart items" class="min-w-0">
+                {% if cart_items %}
+                    {% regroup cart_items|dictsort:"product.store.name" by product.store.name as store_groups %}
+                    <div class="space-y-5">
+                        {% for store_group in store_groups %}
+                            <div class="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
+                                <div class="flex items-center gap-3 border-b border-stone-100 bg-[#fbfaf6] px-4 py-3.5 sm:px-5">
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#edf5ef] text-[#087466]"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 20V8l8-5 8 5v12"></path><path d="M9 20v-6h6v6"></path></svg></span>
+                                    <div><p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Seller</p><h2 class="text-sm font-bold text-[#064e45]">{{ store_group.grouper }}</h2></div>
+                                </div>
+                                <div class="divide-y divide-stone-100">
+                                    {% for item in store_group.list %}
+                                        <article class="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
+                                            <div class="flex min-w-0 flex-1 items-center gap-4">
+                                                <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#f7f7f2] sm:h-24 sm:w-24">
+                                                    {% if item.product.image.name %}
+                                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="h-full w-full object-contain p-2" onerror="this.onerror=null; this.src='{% static 'images/product-placeholder.svg' %}';">
+                                                    {% else %}
+                                                        <img src="{% static 'images/product-placeholder.svg' %}" alt="No image available for {{ item.product.name }}" class="h-full w-full object-contain p-2">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="min-w-0"><h3 class="truncate text-sm font-bold text-slate-900 sm:text-base">{{ item.product.name }}</h3><p class="mt-1 text-xs text-slate-500">Rs. {{ item.product.price }} each</p><p class="mt-1 text-xs font-medium text-[#087466] sm:hidden">{{ item.product.store.name }}</p></div>
+                                            </div>
+                                            <div class="flex items-center justify-between gap-4 sm:justify-end sm:gap-7">
+                                                <form method="post" action="{% url 'update-cart-item' item.id %}" class="inline-flex items-center overflow-hidden rounded-lg border border-stone-200 bg-white" aria-label="Update {{ item.product.name }} quantity">
+                                                    {% csrf_token %}
+                                                    <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" aria-label="Decrease quantity" {% if item.quantity <= 1 %}disabled{% endif %} class="flex h-9 w-9 items-center justify-center text-slate-500 hover:bg-stone-50 hover:text-[#075e52] disabled:cursor-not-allowed disabled:opacity-40">&minus;</button>
+                                                    <span class="flex h-9 min-w-9 items-center justify-center border-x border-stone-200 px-2 text-xs font-bold">{{ item.quantity }}</span>
+                                                    <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}" aria-label="Increase quantity" {% if item.quantity >= item.product.stock %}disabled{% endif %} class="flex h-9 w-9 items-center justify-center text-slate-500 hover:bg-stone-50 hover:text-[#075e52] disabled:cursor-not-allowed disabled:opacity-40">+</button>
+                                                </form>
+                                                <div class="min-w-24 text-right"><p class="text-sm font-extrabold text-[#064e45]">Rs. {{ item.subtotal }}</p><form method="post" action="{% url 'remove-cart-item' item.id %}">{% csrf_token %}<button type="submit" class="mt-1 text-[11px] font-semibold text-rose-600 transition hover:text-rose-800 hover:underline">Remove</button></form></div>
+                                            </div>
+                                        </article>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a href="/" class="mt-5 inline-flex items-center gap-2 text-xs font-bold text-[#087466] transition hover:text-[#064e45]"><span aria-hidden="true">&larr;</span> Continue Shopping</a>
+                {% else %}
+                    <div class="rounded-2xl border border-dashed border-stone-300 bg-white px-6 py-14 text-center shadow-sm">
+                        <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f1f7f1] text-[#087466]"><svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"></path><circle cx="10" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg></span>
+                        <h2 class="mt-4 text-xl font-extrabold text-[#064e45]">Your cart is empty</h2><p class="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">Browse the marketplace and find something from one of our sellers.</p>
+                        <a href="/" class="mt-6 inline-flex rounded-lg bg-[#087466] px-5 py-3 text-xs font-bold text-white transition hover:bg-[#075e52]">Continue Shopping</a>
+                    </div>
+                {% endif %}
+            </section>
+
+            <aside class="lg:sticky lg:top-24">
+                <div class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
+                    <div class="flex items-center justify-between"><h2 class="text-lg font-extrabold text-[#064e45]">Order Summary</h2><span class="rounded-full bg-[#f1f7f1] px-2.5 py-1 text-[10px] font-bold text-[#087466]">Multi-store cart</span></div>
+                    <div class="mt-6 space-y-4 text-sm"><div class="flex justify-between gap-3 text-slate-600"><span>Subtotal</span><span class="font-semibold text-slate-800">Rs. {{ total }}</span></div><div class="flex justify-between gap-3 text-slate-600"><span>Delivery</span><span class="font-semibold text-slate-800">Included</span></div><div class="border-t border-stone-200 pt-4"><div class="flex items-center justify-between gap-3"><span class="font-bold text-slate-900">Total</span><span class="text-xl font-extrabold text-[#064e45]">Rs. {{ total }}</span></div></div></div>
+                    {% if cart_items %}
+                        <a href="{% url 'checkout' %}" class="mt-6 flex w-full items-center justify-center rounded-xl bg-[#087466] px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#075e52] focus:outline-none focus:ring-2 focus:ring-[#087466] focus:ring-offset-2">Proceed to Checkout</a>
+                    {% else %}
+                        <button type="button" disabled class="mt-6 w-full cursor-not-allowed rounded-xl bg-stone-200 px-5 py-3.5 text-sm font-bold text-stone-500">Cart is Empty</button>
+                    {% endif %}
+                    <p class="mt-4 text-center text-[11px] leading-5 text-slate-500">Your selected items from multiple stores stay together here.</p>
+                </div>
+                <div class="mt-4 rounded-xl border border-[#eee6d5] bg-[#fbf6e9] p-4"><p class="text-xs font-bold text-[#765d25]">Shopping across stores</p><p class="mt-1 text-[11px] leading-5 text-slate-600">Review each seller�s items and subtotal before continuing.</p></div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="mt-10 bg-[#075e52] text-emerald-50"><div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8"><div><a href="/" class="text-sm font-extrabold text-white">MultiMart</a><p class="mt-1 text-[10px] text-emerald-100/80">Discover products from independent stores, all in one place.</p></div><div class="flex gap-5 text-[11px] font-medium text-emerald-100/90"><a href="/" class="hover:text-white">Home</a><a href="/login/" class="hover:text-white">Account</a></div><p class="text-[10px] text-emerald-100/70">&copy; 2026 MultiMart. All rights reserved.</p></div></footer>
+</body>
+</html>
+

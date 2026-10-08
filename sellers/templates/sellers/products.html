@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Products | MultiMart Seller</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="min-h-screen bg-[#f7f9f8] text-slate-800 antialiased">
+<div class="min-h-screen md:flex">
+{% include 'sellers/_seller_sidebar.html' with active_page='products' store=store %}
+<div class="min-w-0 flex-1">
+{% include 'sellers/_seller_topbar.html' with store=store %}
+<main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p class="text-[10px] font-bold uppercase tracking-[.16em] text-[#9a7727]">MY STORE: {{ store.name|default:'Seller workspace' }}</p><h1 class="mt-1 text-3xl font-extrabold tracking-tight text-[#064e45]">Products</h1><p class="mt-2 text-sm text-slate-500">Manage the products listed in your store.</p></div><a href="{% url 'seller_product_add' %}" class="inline-flex w-fit items-center gap-2 rounded-lg bg-[#087466] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#075e52]"><span class="text-base leading-none">+</span> Add Product</a></div>
+    {% if messages %}<div class="mt-5 space-y-2">{% for message in messages %}<p class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">{{ message }}</p>{% endfor %}</div>{% endif %}
+    <section class="mt-7 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
+        <div class="flex flex-col justify-between gap-4 border-b border-stone-100 p-4 sm:flex-row sm:items-center sm:px-5"><div><h2 class="text-sm font-extrabold text-[#064e45]">Your inventory</h2><p class="mt-1 text-xs text-slate-500">{{ products|length }} product{{ products|length|pluralize }}</p></div><form method="get" role="search" class="flex w-full gap-2 sm:max-w-md"><label for="product-search" class="sr-only">Search products</label><input id="product-search" type="search" name="q" value="{{ query }}" placeholder="Search name or category..." class="min-w-0 flex-1 rounded-lg border border-stone-300 px-3 py-2.5 text-xs outline-none focus:border-[#087466] focus:ring-2 focus:ring-emerald-900/10"><button type="submit" class="rounded-lg border border-stone-200 bg-[#fbfaf6] px-4 py-2.5 text-xs font-bold text-[#075e52] hover:bg-[#f1f7f1]">Search</button></form></div>
+        {% if products %}
+            <div class="overflow-x-auto"><table class="w-full min-w-[760px] text-left"><thead class="bg-[#fbfaf6] text-[10px] font-bold uppercase tracking-wider text-slate-500"><tr><th class="px-5 py-3">Image</th><th class="px-5 py-3">Product</th><th class="px-5 py-3">Price</th><th class="px-5 py-3">Stock</th><th class="px-5 py-3">Status</th><th class="px-5 py-3 text-right">Action</th></tr></thead><tbody class="divide-y divide-stone-100 text-xs">
+                {% for product in products %}<tr class="transition hover:bg-[#fbfaf6]"><td class="px-5 py-3"><div class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg bg-[#f7f7f2]">{% if product.image.name %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-full w-full object-contain">{% else %}<img src="{% static 'images/product-placeholder.svg' %}" alt="No image available" class="h-full w-full object-contain">{% endif %}</div></td><td class="px-5 py-3"><p class="font-bold text-slate-800">{{ product.name }}</p><p class="mt-1 text-[10px] text-slate-500">{% if product.category %}{{ product.category.name }}{% else %}Uncategorized{% endif %}</p></td><td class="px-5 py-3 font-semibold text-[#064e45]">Rs. {{ product.price }}</td><td class="px-5 py-3 text-slate-600">{{ product.stock }}</td><td class="px-5 py-3">{% if product.is_active %}<span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700">Active</span>{% else %}<span class="rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-bold text-stone-500">Hidden</span>{% endif %}</td><td class="px-5 py-3 text-right"><a href="{% url 'seller_product_edit' product.id %}" class="inline-flex rounded-lg border border-stone-200 px-3 py-2 text-[10px] font-bold text-[#087466] hover:border-[#b8d4cb] hover:bg-[#f1f7f1]">Edit</a><form method="post" action="{% url 'seller_product_delete' product.id %}" class="inline">{% csrf_token %}<button type="submit" class="ml-2 inline-flex rounded-lg border border-rose-200 px-3 py-2 text-[10px] font-bold text-rose-700 hover:bg-rose-50">Delete</button></form></td></tr>{% endfor %}
+            </tbody></table></div>
+        {% else %}
+            <div class="px-5 py-14 text-center"><span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#f1f7f1] text-2xl font-light text-[#087466]">+</span><h3 class="mt-4 text-base font-extrabold text-[#064e45]">{% if query %}No matching products{% else %}No products yet{% endif %}</h3><p class="mt-1 text-xs text-slate-500">{% if query %}Try a different search term.{% else %}Add your first product to start building your store catalog.{% endif %}</p>{% if not query %}<a href="{% url 'seller_product_add' %}" class="mt-5 inline-flex rounded-lg bg-[#087466] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#075e52]">Add Product</a>{% endif %}</div>
+        {% endif %}
+    </section>
+</main>
+<footer class="mt-10 bg-[#075e52] py-5 text-center text-[10px] text-emerald-100/75">&copy; 2026 MultiMart. Seller workspace.</footer>
+</div>
+</div>
+</body></html>
+

@@ -1,0 +1,18 @@
+.admin-stat { display: flex; min-height: 102px; align-items: center; justify-content: space-between; gap: 12px; padding: 17px 19px; border: 1px solid #e4e9e8; border-radius: 10px; background: #fff; box-shadow: 0 2px 8px rgb(23 47 48 / 3%); }
+.admin-stat p { margin: 0; color: #788587; font-size: 11px; font-weight: 500; }
+.admin-stat strong { display: block; margin-top: 8px; color: #27383b; font-size: 21px; font-weight: 750; }
+.admin-stat-icon { display: grid; width: 42px; height: 42px; flex: 0 0 42px; place-items: center; border-radius: 50%; background: #f0f4f5; color: #78919a; }
+.admin-stat-icon svg { width: 21px; height: 21px; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.admin-chart { display: grid; grid-template-columns: 34px minmax(0, 1fr); min-height: 218px; }
+.chart-scale { display: flex; flex-direction: column; justify-content: space-between; padding: 1px 7px 25px 0; color: #94a0a1; font-size: 9px; text-align: right; }
+.chart-area { position: relative; min-width: 0; }
+.chart-gridline { position: absolute; right: 0; left: 0; border-top: 1px dashed #dce3e2; }
+.chart-gridline-top { top: 0; }.chart-gridline-mid { top: 50%; }.chart-gridline-bottom { bottom: 25px; border-top-style: solid; border-top-color: #aebabb; }
+.chart-bars { position: absolute; inset: 0 0 0; display: flex; align-items: stretch; justify-content: space-around; gap: clamp(8px, 3vw, 34px); padding: 0 13px; }
+.chart-column { position: relative; display: flex; min-width: 20px; flex: 1; flex-direction: column; align-items: center; justify-content: flex-end; }
+.chart-bar-wrap { position: relative; display: flex; width: min(100%, 54px); height: calc(100% - 25px); align-items: flex-end; justify-content: center; }
+.chart-bar { display: block; width: 100%; min-height: 4px; border: 1px solid #7182d8; border-bottom: 0; border-radius: 4px 4px 0 0; background: rgb(116 130 216 / 45%); transition: background .15s ease; }
+.chart-column:hover .chart-bar { background: rgb(116 130 216 / 68%); }
+.chart-value { position: absolute; z-index: 1; top: 4px; color: #7182d8; font-size: 9px; font-weight: 700; }
+.chart-label { display: block; height: 25px; padding-top: 7px; color: #899596; font-size: 9px; white-space: nowrap; }
+@media (max-width: 520px) { .admin-stat { min-height: 88px; padding: 14px; } .admin-stat strong { font-size: 18px; } .admin-chart { min-height: 180px; } .chart-bars { gap: 4px; padding: 0 3px; } .chart-label { font-size: 8px; } }

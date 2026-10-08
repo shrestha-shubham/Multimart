@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Placed | MultiMart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#f8f7f2] text-slate-800 antialiased">
+    <header class="border-b border-emerald-900/30 bg-[#00695c]">
+        <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8" aria-label="Main navigation">
+            <a href="/" class="flex items-center gap-2 text-lg font-extrabold tracking-tight text-white" aria-label="MultiMart home"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15 text-sm text-white" aria-hidden="true">M</span>MultiMart</a>
+            <div class="flex items-center gap-4"><a href="{% url 'dashboard' %}" class="text-xs font-semibold text-emerald-50 hover:text-white">My account</a><a href="{% url 'logout' %}" class="text-xs font-semibold text-emerald-50 hover:text-white">Log out</a></div>
+        </nav>
+    </header>
+    <main class="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+        <section class="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-9">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#eaf4ed] text-xl font-bold text-[#087466]" aria-hidden="true">&#10003;</div>
+            <p class="mt-6 text-[10px] font-bold uppercase tracking-[.16em] text-[#9a7727]">Order confirmed</p>
+            <h1 class="mt-1 text-2xl font-extrabold text-[#064e45]">Thanks, {{ order.delivery_name }}.</h1>
+            <p class="mt-2 text-sm text-slate-600">Your order <span class="font-bold text-slate-800">{{ order.order_number }}</span> has been placed.</p>
+            <div class="mt-7 divide-y divide-stone-100 border-y border-stone-200">
+                {% for item in order.items.all %}
+                    <div class="flex items-center justify-between gap-4 py-4"><div><p class="text-sm font-semibold text-slate-800">{{ item.product.name }}</p><p class="mt-1 text-xs text-slate-500">{{ item.store.name }} &middot; Qty {{ item.quantity }}</p></div><p class="shrink-0 text-sm font-bold text-[#064e45]">Rs. {{ item.subtotal }}</p></div>
+                {% endfor %}
+            </div>
+            {% if order.discount_amount %}<div class="mt-4 flex items-center justify-between text-sm text-emerald-700"><span>{% if order.coupon %}Coupon {{ order.coupon.code }}{% else %}Discount{% endif %}</span><span>- Rs. {{ order.discount_amount }}</span></div>{% endif %}
+            <div class="mt-5 flex items-center justify-between"><span class="font-bold text-slate-900">Total</span><span class="text-xl font-extrabold text-[#064e45]">Rs. {{ order.total_amount }}</span></div>
+            <div class="mt-6 rounded-xl bg-[#fbfaf6] p-4 text-sm"><p class="font-bold text-slate-800">Delivery details</p><p class="mt-2 text-slate-600">{{ order.delivery_name }} &middot; {{ order.delivery_phone }}</p><p class="mt-1 text-slate-600">{{ order.delivery_address }}</p><p class="mt-2 text-xs font-semibold text-[#087466]">Status: {{ order.get_delivery_status_display }}</p><p class="mt-1 text-xs font-semibold text-[#087466]">{{ order.get_payment_method_display }}</p></div>
+            <a href="/" class="mt-7 inline-flex items-center justify-center rounded-lg bg-[#087466] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#075e52]">Continue Shopping</a>
+        </section>
+    </main>
+</body>
+</html>

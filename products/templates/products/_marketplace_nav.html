@@ -1,0 +1,36 @@
+<header class="site-header">
+    <nav class="nav-shell" aria-label="Main navigation">
+        <a href="{% url 'home' %}" class="brand" aria-label="MultiMart home">
+            <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 28" fill="none"><path d="M3 23 7 7l9 10 9-10 4 16" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="5" r="3" fill="#54D4C0"/><circle cx="25" cy="5" r="3" fill="#54D4C0"/></svg></span>
+            <span>MultiMart</span>
+        </a>
+        <div class="desktop-links">
+            <a class="nav-link{% if not detail_page %} is-current{% endif %}" href="{% url 'home' %}#top">Home</a>
+            <a class="nav-link{% if detail_page %} is-current{% endif %}" href="{% url 'home' %}#products">Shop</a>
+            <a class="nav-link" href="{% url 'home' %}#local-sellers">Stores</a>
+            <a class="nav-link" href="{% url 'home' %}#category-navigation">Categories</a>
+        </div>
+        <form class="nav-search" data-catalog-search role="search" method="get" action="{% url 'home' %}">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
+            <label class="visually-hidden" for="nav-search">Search products, stores and more</label>
+            <input id="nav-search" name="q" type="search" value="{{ search_query }}" placeholder="Search for products, stores and more..." data-search-input>
+            <button type="submit" class="visually-hidden">Search</button>
+        </form>
+        <div class="nav-actions">
+            <a class="cart-link" href="{% url 'cart' %}" aria-label="Shopping cart"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>{% if user.is_authenticated and user.cart %}<span class="cart-count">{{ user.cart.items.count }}</span>{% else %}<span class="cart-count">0</span>{% endif %}</a>
+            {% if user.is_authenticated %}{% include 'accounts/_account_menu.html' %}{% else %}<a class="login-link" href="{% url 'login' %}">Login</a><a class="signup-button" href="{% url 'register' %}">Sign Up</a>{% endif %}
+        </div>
+        <button class="mobile-search-toggle" type="button" aria-label="Search products" data-focus-search><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg></button>
+        <details class="mobile-menu">
+            <summary aria-label="Open navigation menu"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary>
+            <div class="mobile-menu-panel"><a href="{% url 'home' %}#top">Home</a><a href="{% url 'home' %}#products">Shop</a><a href="{% url 'home' %}#local-sellers">Stores</a><a href="{% url 'home' %}#category-navigation">Categories</a>{% if user.is_authenticated %}<a href="{% url 'profile' %}">My Profile</a><a href="{% url 'logout' %}">Log out</a>{% else %}<a href="{% url 'login' %}">Login</a><a href="{% url 'register' %}">Sign Up</a>{% endif %}<a href="{% url 'cart' %}">Shopping Cart</a></div>
+        </details>
+    </nav>
+    {% if detail_page %}
+        <form class="nav-search mobile-nav-search" data-catalog-search role="search" method="get" action="{% url 'home' %}">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
+            <label class="visually-hidden" for="mobile-nav-search">Search products</label>
+            <input id="mobile-nav-search" name="q" type="search" value="{{ search_query }}" placeholder="Search for products and stores..." data-search-input>
+        </form>
+    {% endif %}
+</header>

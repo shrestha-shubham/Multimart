@@ -1,0 +1,18 @@
+<aside class="flex w-full shrink-0 flex-col justify-between border-b border-slate-200 bg-white md:sticky md:top-0 md:min-h-screen md:w-[232px] md:border-b-0 md:border-r">
+    <div>
+        <a href="{% url 'home' %}" class="flex items-center gap-2 px-5 py-5 text-lg font-extrabold tracking-tight text-slate-900">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#e8f7f3] text-sm font-black text-[#087f7b]">M</span>MultiMart
+        </a>
+        <div class="flex items-center gap-3 border-b border-slate-100 px-5 pb-5 pt-2 md:flex-col md:items-start">
+            <span class="grid h-12 w-12 place-items-center rounded-xl bg-[#edf7f4] text-lg font-extrabold text-[#087f7b]">{{ store.name|default:request.user.username|first|upper }}</span>
+            <div class="min-w-0"><p class="truncate text-sm font-bold text-slate-800">{{ store.name|default:request.user.username }}</p><p class="mt-0.5 text-[11px] text-slate-500">Seller account</p></div>
+        </div>
+        <nav class="flex gap-1 overflow-x-auto px-3 py-3 md:flex-col md:px-3 md:py-5" aria-label="Seller dashboard navigation">
+            <a href="{% url 'dashboard' %}" class="relative flex shrink-0 items-center gap-3 rounded-lg px-3 py-3 text-xs {% if active_page == 'dashboard' %}bg-[#eef8f5] font-bold text-[#087f7b] after:absolute after:bottom-2 after:left-0 after:top-2 after:w-[3px] after:rounded-full after:bg-[#12a486]{% else %}font-medium text-slate-600 hover:bg-slate-50{% endif %}"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+            <a href="{% url 'seller_product_add' %}" class="relative flex shrink-0 items-center gap-3 rounded-lg px-3 py-3 text-xs {% if active_page == 'add-product' %}bg-[#eef8f5] font-bold text-[#087f7b] after:absolute after:bottom-2 after:left-0 after:top-2 after:w-[3px] after:rounded-full after:bg-[#12a486]{% else %}font-medium text-slate-600 hover:bg-slate-50{% endif %}"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8m-4-4h8"/></svg>Add Product</a>
+            <a href="{% url 'seller_products' %}" class="relative flex shrink-0 items-center gap-3 rounded-lg px-3 py-3 text-xs {% if active_page == 'products' %}bg-[#eef8f5] font-bold text-[#087f7b] after:absolute after:bottom-2 after:left-0 after:top-2 after:w-[3px] after:rounded-full after:bg-[#12a486]{% else %}font-medium text-slate-600 hover:bg-slate-50{% endif %}"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 5h16v4H4zM4 11h16v8H4z"/><path d="M8 15h4"/></svg>Manage Products</a>
+            <a href="{% url 'dashboard' %}#recent-orders" class="flex shrink-0 items-center gap-3 rounded-lg px-3 py-3 text-xs font-medium text-slate-600 hover:bg-slate-50"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M7 3h10v18l-5-3-5 3V3Z"/><path d="M9 8h6m-6 4h6"/></svg>Orders</a>
+        </nav>
+    </div>
+    <a href="{% url 'logout' %}" class="hidden items-center gap-3 border-t border-slate-100 px-6 py-4 text-xs font-semibold text-slate-500 hover:bg-slate-50 hover:text-rose-700 md:flex"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M10 17l5-5-5-5m5 5H3"/><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"/></svg>Sign out</a>
+</aside>

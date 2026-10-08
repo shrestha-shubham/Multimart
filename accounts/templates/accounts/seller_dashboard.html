@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard | MultiMart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#f8f7f2] text-slate-800 antialiased">
+<div class="min-h-screen bg-[#f7f9f8] md:flex">
+    {% include 'sellers/_seller_sidebar.html' with active_page='dashboard' store=request.user.store %}
+
+    <div class="min-w-0 flex-1">
+        {% include 'sellers/_seller_topbar.html' with store=request.user.store %}
+    <main class="min-w-0 px-4 py-7 sm:px-7 lg:px-10 lg:py-9">
+        <div class="mx-auto max-w-6xl">
+            <header class="flex flex-col justify-between gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-center">
+                <div><p class="text-[10px] font-bold uppercase tracking-[.16em] text-[#087f7b]">Seller workspace</p><h1 class="mt-1 text-2xl font-extrabold tracking-tight text-slate-900">Seller Dashboard</h1></div>
+                <a href="/" class="inline-flex w-fit items-center gap-2 rounded-lg border border-stone-200 bg-white px-4 py-2.5 text-xs font-bold text-[#087466] transition hover:border-[#b8d4cb] hover:bg-[#f1f7f1]">View Marketplace <span aria-hidden="true">&rarr;</span></a>
+            </header>
+
+            {% if request.user.store %}
+                {% regroup request.user.store.order_items.all|dictsortreversed:"order.created_at" by order.order_number as order_groups %}
+                <section id="store-profile" class="mt-6 flex flex-col justify-between gap-5 rounded-2xl bg-[#075e52] p-6 text-white shadow-sm sm:flex-row sm:items-center sm:p-8">
+                    <div class="flex items-center gap-4"><span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15"><svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 10h18l-2-6H5l-2 6Z"></path><path d="M5 10v10h14V10M9 20v-6h6v6"></path><path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"></path></svg></span><div><p class="text-[10px] font-bold uppercase tracking-[.16em] text-emerald-100">Your store</p><h2 class="mt-1 text-2xl font-extrabold">{{ request.user.store.name }}</h2><p class="mt-1 text-xs text-emerald-50/80">Welcome back, {{ request.user.username }}</p></div></div>
+                    <a href="/" class="inline-flex w-fit shrink-0 items-center rounded-lg bg-[#f2d787] px-4 py-2.5 text-xs font-bold text-[#064e45] transition hover:bg-[#f7e6ae]">Open Storefront</a>
+                </section>
+
+                <section class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Store overview">
+                    <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><p class="text-xs font-medium text-slate-500">Total Products</p><span class="grid h-10 w-10 place-items-center rounded-full bg-slate-50 text-slate-400">▤</span></div><p class="mt-3 text-2xl font-extrabold text-slate-800">{{ total_products }}</p></article>
+                    <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><p class="text-xs font-medium text-slate-500">Total Earnings</p><span class="grid h-10 w-10 place-items-center rounded-full bg-slate-50 text-slate-400">$</span></div><p class="mt-3 text-2xl font-extrabold text-slate-800">Rs. {{ total_earnings|floatformat:2 }}</p></article>
+                    <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><p class="text-xs font-medium text-slate-500">Total Orders</p><span class="grid h-10 w-10 place-items-center rounded-full bg-slate-50 text-slate-400">◇</span></div><p class="mt-3 text-2xl font-extrabold text-slate-800">{{ total_orders }}</p></article>
+                    <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><p class="text-xs font-medium text-slate-500">Total Ratings</p><span class="grid h-10 w-10 place-items-center rounded-full bg-slate-50 text-slate-400">☆</span></div><p class="mt-3 text-2xl font-extrabold text-slate-800">{% if average_rating %}{{ average_rating|floatformat:1 }}{% else %}0{% endif %}<span class="ml-1 text-sm font-semibold text-slate-400">/ 5</span></p></article>
+                </section>
+
+                <section class="mt-7 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-labelledby="seller-reviews-title">
+                    <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4"><div><h2 id="seller-reviews-title" class="text-sm font-bold text-slate-800">Total Reviews</h2><p class="mt-1 text-[10px] text-slate-500">{{ total_reviews }} verified product review{{ total_reviews|pluralize }}</p></div></div>
+                    {% if recent_reviews %}
+                        <div class="divide-y divide-slate-100">
+                            {% for review in recent_reviews %}
+                                <article class="grid gap-4 px-5 py-5 md:grid-cols-[minmax(0,1fr)_190px] md:items-center">
+                                    <div class="min-w-0"><div class="flex items-center gap-3"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#edf7f4] text-xs font-bold text-[#087f7b]">{{ review.customer.first_name|default:review.customer.username|first|upper }}</span><div><p class="text-xs font-bold text-slate-700">{{ review.customer.get_full_name|default:review.customer.username }}</p><p class="mt-0.5 text-[10px] text-slate-400">{{ review.created_at|date:'D M j Y' }}</p></div></div><p class="mt-3 text-xs leading-5 text-slate-600">{{ review.comment }}</p></div>
+                                    <div class="md:text-right"><p class="text-[10px] font-medium text-slate-400">{{ review.product.category.name|default:'Other' }}</p><a href="{% url 'product-detail' review.product_id %}" class="mt-1 block text-xs font-bold text-slate-700 hover:text-[#087f7b]">{{ review.product.name }}</a><span class="mt-1 inline-flex text-base tracking-wider text-emerald-600" aria-label="{{ review.rating }} out of 5 stars">{% for star in '12345' %}{% if forloop.counter <= review.rating %}★{% else %}<span class="text-slate-200">★</span>{% endif %}{% endfor %}</span><a href="{% url 'product-detail' review.product_id %}" class="mt-2 inline-flex rounded-md bg-slate-100 px-3 py-2 text-[10px] font-semibold text-slate-600 hover:bg-slate-200">View Product</a></div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}<p class="px-5 py-9 text-xs text-slate-500">Verified customer reviews will appear here after delivered orders are reviewed.</p>{% endif %}
+                </section>
+
+                <section class="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
+                    <div id="recent-orders" class="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
+                        <div class="flex items-end justify-between gap-3 border-b border-stone-100 px-5 py-4 sm:px-6"><div><p class="text-[10px] font-bold uppercase tracking-[.15em] text-[#9a7727]">Store activity</p><h2 class="mt-1 text-lg font-extrabold text-[#064e45]">Recent Orders</h2></div><span class="text-[10px] text-slate-500">Latest order items</span></div>
+                        {% if order_groups %}
+                            <div class="divide-y divide-stone-100">
+                                {% for order_group in order_groups|slice:":5" %}
+                                    <article class="p-5 sm:px-6"><div class="flex flex-wrap items-center justify-between gap-2"><div><p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Order</p><h3 class="mt-1 text-sm font-extrabold text-[#087466]">{{ order_group.grouper }}</h3></div><div class="flex items-center gap-2"><span class="rounded-full bg-[#f1f7f1] px-2.5 py-1 text-[10px] font-bold text-[#087466]">{{ order_group.list.0.order.created_at|date:"M j, Y" }}</span><span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold text-slate-600">{{ order_group.list.0.order.get_delivery_status_display }}</span></div></div><div class="mt-3 space-y-2">{% for item in order_group.list %}<div class="flex items-center justify-between gap-3 rounded-lg bg-[#fbfaf6] px-3 py-2"><div class="min-w-0"><p class="truncate text-xs font-semibold text-slate-800">{{ item.product.name }}</p><p class="mt-0.5 text-[10px] text-slate-500">Quantity: {{ item.quantity }}</p></div><p class="shrink-0 text-xs font-bold text-[#064e45]">Rs. {{ item.subtotal }}</p></div>{% endfor %}</div></article>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="px-5 py-10 text-center sm:px-6"><span class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#f1f7f1] text-[#087466]"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M6 3h12v18l-6-3-6 3V3Z"></path><path d="M9 8h6M9 12h6"></path></svg></span><h3 class="mt-3 text-sm font-bold text-slate-800">No orders to show</h3><p class="mt-1 text-xs text-slate-500">Order items for your store will appear here.</p></div>
+                        {% endif %}
+                    </div>
+
+                    <aside class="space-y-4">
+                        <section class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"><p class="text-[10px] font-bold uppercase tracking-[.15em] text-[#9a7727]">Quick actions</p><h2 class="mt-1 text-base font-extrabold text-[#064e45]">Shortcuts</h2><div class="mt-4 space-y-2"><a href="{% url 'seller_product_add' %}" class="flex items-center justify-between rounded-xl bg-[#f1f7f1] px-3.5 py-3 text-xs font-bold text-[#075e52] transition hover:bg-[#e7f1ea]">Add a product <span aria-hidden="true">&rarr;</span></a><a href="{% url 'seller_products' %}" class="flex items-center justify-between rounded-xl bg-[#f1f7f1] px-3.5 py-3 text-xs font-bold text-[#075e52] transition hover:bg-[#e7f1ea]">Manage products <span aria-hidden="true">&rarr;</span></a><a href="{% url 'seller_profile' %}" class="flex items-center justify-between rounded-xl bg-[#fbf6e9] px-3.5 py-3 text-xs font-bold text-[#765d25] transition hover:bg-[#f5edd8]">Edit store profile <span aria-hidden="true">&rarr;</span></a><a href="#recent-orders" class="flex items-center justify-between rounded-xl bg-[#fbf6e9] px-3.5 py-3 text-xs font-bold text-[#765d25] transition hover:bg-[#f5edd8]">Review orders <span aria-hidden="true">&rarr;</span></a><a href="{% url 'logout' %}" class="flex items-center justify-between rounded-xl border border-stone-200 px-3.5 py-3 text-xs font-bold text-slate-600 transition hover:bg-stone-50">Log out <span aria-hidden="true">&rarr;</span></a></div></section>
+                        <section class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"><p class="text-[10px] font-bold uppercase tracking-[.15em] text-[#9a7727]">Store details</p><h2 class="mt-1 text-base font-extrabold text-[#064e45]">{{ request.user.store.name }}</h2>{% if request.user.store.description %}<p class="mt-2 text-xs leading-5 text-slate-600">{{ request.user.store.description|truncatechars:120 }}</p>{% endif %}{% if request.user.store.phone %}<p class="mt-3 text-[11px] text-slate-500">Phone: {{ request.user.store.phone }}</p>{% endif %}{% if request.user.store.address %}<p class="mt-1 text-[11px] text-slate-500">Address: {{ request.user.store.address }}</p>{% endif %}</section>
+                    </aside>
+                </section>
+            {% else %}
+                <section class="mt-6 rounded-2xl border border-stone-200 bg-white p-7 shadow-sm sm:p-9"><p class="text-xs font-semibold text-[#087466]">Welcome, {{ request.user.username }}</p><h2 class="mt-2 text-2xl font-extrabold text-[#064e45]">No store profile is linked to this account.</h2><p class="mt-2 max-w-xl text-sm leading-6 text-slate-500">Store information and seller activity will appear here when available.</p><a href="/" class="mt-5 inline-flex rounded-lg bg-[#087466] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#075e52]">View Marketplace</a></section>
+            {% endif %}
+
+            <footer class="mt-8 border-t border-stone-200 py-5 text-center text-[10px] text-slate-500 sm:text-left">&copy; 2026 MultiMart. Seller workspace.</footer>
+        </div>
+    </main>
+</div>
+</div>
+</body>
+</html>
+
+
+

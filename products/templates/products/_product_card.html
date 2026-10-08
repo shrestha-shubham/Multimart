@@ -1,0 +1,19 @@
+{% load static %}
+<article class="group flex flex-col overflow-hidden rounded-xl border border-stone-200 bg-white transition hover:border-[#b8d4cb] hover:shadow-md">
+    <a href="{% url 'product-detail' product.id %}" class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#087466]" aria-label="View {{ product.name }}">
+        <div class="relative flex h-44 items-center justify-center overflow-hidden bg-[#f7f7f2]">
+            {% if product.image.name %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-[1.03]" onerror="this.onerror=null; this.src='{% static 'images/product-placeholder.svg' %}';">
+            {% else %}
+                <img src="{% static 'images/product-placeholder.svg' %}" alt="No image available for {{ product.name }}" class="h-full w-full object-contain p-3">
+            {% endif %}
+        </div>
+    </a>
+    <div class="px-3.5 pb-1 pt-3"><a href="{% url 'store-profile' product.store.id %}" aria-label="Visit {{ product.store.name }} store profile" class="block truncate text-[10px] font-semibold text-slate-500 underline decoration-dotted underline-offset-2 hover:text-[#087466]">{{ product.store.name }}</a><a href="{% url 'product-detail' product.id %}" class="line-clamp-1 text-sm font-bold text-slate-900 hover:text-[#087466]">{{ product.name }}</a><p class="mt-1.5 min-h-9 text-xs leading-[1.15rem] text-slate-500">{{ product.description|truncatechars:70 }}</p></div>
+    <div class="mt-auto px-3.5 pb-3.5 pt-2">
+        <div class="flex items-end justify-between gap-2">
+            <div><p class="text-sm font-extrabold text-[#064e45]">Rs. {{ product.price }}</p>{% if product.stock > 0 %}<p class="mt-1 text-[10px] font-semibold text-emerald-700">{{ product.stock }} available</p>{% else %}<p class="mt-1 text-[10px] font-semibold text-rose-600">Out of stock</p>{% endif %}</div>
+            {% if product.stock > 0 %}<form method="post" action="{% url 'add-to-cart' product.id %}">{% csrf_token %}<input type="hidden" name="quantity" value="1"><button type="submit" class="inline-flex shrink-0 items-center justify-center rounded-lg bg-[#087466] px-3 py-2 text-[10px] font-bold text-white transition hover:bg-[#075e52] focus:outline-none focus:ring-2 focus:ring-[#087466] focus:ring-offset-2">Add to Cart</button></form>{% else %}<span class="inline-flex shrink-0 cursor-not-allowed items-center justify-center rounded-lg bg-stone-100 px-3 py-2 text-[10px] font-semibold text-stone-400">Unavailable</span>{% endif %}
+        </div>
+    </div>
+</article>

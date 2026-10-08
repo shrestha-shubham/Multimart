@@ -1,0 +1,18 @@
+<details class="account-menu">
+    <summary class="account-menu-trigger" aria-label="Open account menu for {{ user.get_full_name|default:user.username }}">
+        {{ user.get_full_name|default:user.username|first|upper }}
+    </summary>
+    <div class="account-menu-panel">
+        <div class="account-menu-identity">
+            <span class="account-menu-avatar" aria-hidden="true">{{ user.get_full_name|default:user.username|first|upper }}</span>
+            <span class="account-menu-user"><strong>{{ user.get_full_name|default:user.username }}</strong><span>{{ user.email|default:'Email not provided' }}</span></span>
+        </div>
+        <a href="{% url 'dashboard' %}" class="account-menu-item"><span aria-hidden="true">▦</span>Dashboard</a>
+        <a href="{% url 'profile' %}" class="account-menu-item"><span aria-hidden="true">⚙</span>Manage account</a>
+        <a href="{% url 'dashboard' %}#recent-orders" class="account-menu-item"><span aria-hidden="true">▣</span>My Orders</a>
+        <a href="{% url 'logout' %}" class="account-menu-item account-menu-signout"><span aria-hidden="true">↪</span>Sign out</a>
+        <div class="account-menu-separator"></div>
+        <a href="{% url 'logout' %}?next={% url 'register' %}" class="account-menu-item"><span aria-hidden="true">＋</span>Add account</a>
+        <div class="account-menu-footer">Development mode</div>
+    </div>
+</details>

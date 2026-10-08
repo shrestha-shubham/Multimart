@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load socialaccount %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in | MultiMart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#f8f7f2] text-slate-800 antialiased">
+    <main class="mx-auto grid min-h-screen max-w-6xl items-center gap-8 px-4 py-10 sm:px-6 md:grid-cols-2 lg:px-8">
+        <section class="relative hidden min-h-[540px] flex-col justify-between overflow-hidden rounded-3xl bg-[#075e52] p-9 text-white shadow-lg md:flex lg:p-11">
+            <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full border-[35px] border-white/5"></div>
+            <a href="/" class="relative flex items-center gap-2 text-xl font-extrabold tracking-tight"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-sm" aria-hidden="true">M</span>MultiMart</a>
+            <div class="relative"><p class="text-xs font-bold uppercase tracking-[.18em] text-[#f2d787]">A marketplace made simple</p><h1 class="mt-4 max-w-md text-4xl font-extrabold leading-tight">Good to see you again.</h1><p class="mt-4 max-w-sm text-sm leading-7 text-emerald-50/85">Sign in to keep exploring products from independent sellers, all in one place.</p></div>
+            <div class="relative flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-4"><span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f2d787] text-[#075e52]" aria-hidden="true"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"></path><circle cx="10" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg></span><div><p class="text-sm font-bold">Many stores. One cart.</p><p class="mt-0.5 text-xs text-emerald-50/75">Your marketplace is ready when you are.</p></div></div>
+        </section>
+
+        <section class="mx-auto w-full max-w-md rounded-3xl border border-stone-200 bg-white p-7 shadow-lg shadow-stone-200/60 sm:p-10">
+            <a href="/" class="flex items-center gap-2 text-lg font-extrabold text-[#075e52] md:hidden"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#075e52] text-sm text-white" aria-hidden="true">M</span>MultiMart</a>
+            <div class="mt-6 md:mt-0"><p class="text-xs font-bold uppercase tracking-[.16em] text-[#9a7727]">Welcome back</p><h2 class="mt-2 text-3xl font-extrabold tracking-tight text-[#064e45]">Sign in to MultiMart</h2><p class="mt-2 text-sm leading-6 text-slate-500">Enter your username and password to continue.</p></div>
+
+            {% if error %}
+                <div role="alert" aria-live="polite" class="mt-6 flex gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800"><span class="font-bold" aria-hidden="true">!</span><p class="font-medium">{{ error }}</p></div>
+            {% endif %}
+
+            {% if google_login_enabled %}
+                <form method="POST" action="{% provider_login_url 'google' %}" class="mt-7">
+                    {% csrf_token %}
+                    <button type="submit" class="flex w-full items-center justify-center gap-3 rounded-xl border border-stone-300 bg-white px-5 py-3.5 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-[#087466] focus:ring-offset-2">
+                        <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.01 13.22l7.98 6.19C11.88 13.72 17.45 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.71 7.18l7.62 5.91c4.45-4.11 7.13-10.17 7.13-17.56z"/><path fill="#FBBC05" d="M9.99 28.59a14.4 14.4 0 0 1 0-9.18l-7.98-6.19a24 24 0 0 0 0 21.56l7.98-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.89l-7.62-5.91c-2.12 1.42-4.84 2.26-8.28 2.26-6.55 0-12.12-4.22-14.01-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                        Continue with Google
+                    </button>
+                </form>
+
+                <div class="my-6 flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-slate-400"><span class="h-px flex-1 bg-stone-200"></span>or use your account<span class="h-px flex-1 bg-stone-200"></span></div>
+            {% endif %}
+
+            <form method="POST" class="space-y-5">
+                {% csrf_token %}
+                <div><label for="username" class="mb-2 block text-sm font-bold text-slate-700">Username</label><input id="username" type="text" name="username" autocomplete="username" required placeholder="Enter your username" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-[#087466] focus:ring-4 focus:ring-emerald-900/10"></div>
+                <div><label for="password" class="mb-2 block text-sm font-bold text-slate-700">Password</label><input id="password" type="password" name="password" autocomplete="current-password" required placeholder="Enter your password" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-[#087466] focus:ring-4 focus:ring-emerald-900/10"></div>
+                <button type="submit" class="w-full rounded-xl bg-[#087466] px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#075e52] focus:outline-none focus:ring-2 focus:ring-[#087466] focus:ring-offset-2">Sign In</button>
+            </form>
+
+            <div class="mt-6 border-t border-stone-100 pt-5 text-center"><p class="text-sm text-slate-600">New to MultiMart? <a href="{% url 'register' %}" class="font-bold text-[#087466] transition hover:text-[#064e45]">Create an account</a></p><a href="/" class="mt-4 inline-block text-sm font-semibold text-[#087466] transition hover:text-[#064e45]">Back to marketplace</a><p class="mt-4 text-[11px] leading-5 text-slate-400">MultiMart brings independent sellers together in one marketplace.</p></div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | MultiMart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#f8f7f2] text-slate-800 antialiased">
+    <header class="border-b border-emerald-900/30 bg-[#00695c]">
+        <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8" aria-label="Main navigation">
+            <a href="/" class="flex items-center gap-2 text-lg font-extrabold tracking-tight text-white" aria-label="MultiMart home"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15 text-sm text-white" aria-hidden="true">M</span>MultiMart</a>
+            <div class="flex items-center gap-3"><a href="/cart/" class="text-xs font-semibold text-emerald-50 transition hover:text-white">Back to cart</a><span class="hidden h-4 border-l border-white/25 sm:block"></span><span class="text-xs font-bold text-white">Checkout</span><a href="{% url 'logout' %}" class="text-xs font-semibold text-emerald-50 hover:text-white">Log out</a></div>
+        </nav>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-11 lg:px-8">
+        <div class="mb-7"><p class="text-[10px] font-bold uppercase tracking-[.16em] text-[#9a7727]">Almost there</p><h1 class="mt-1 text-3xl font-extrabold tracking-tight text-[#064e45]">Checkout</h1><p class="mt-2 text-sm text-slate-500">Review your information and payment preference.</p></div>
+        {% if errors %}<div class="mb-5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800" role="alert">{% for error in errors %}<p>{{ error }}</p>{% endfor %}</div>{% endif %}
+
+        <form method="post" class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
+            {% csrf_token %}
+            <div class="space-y-5">
+                <section class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-7">
+                    <div class="mb-6 flex items-center gap-3"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1f7f1] text-sm font-extrabold text-[#087466]">1</span><div><h2 class="text-lg font-extrabold text-[#064e45]">Delivery Address</h2><p class="mt-0.5 text-xs text-slate-500">Enter the address details for delivery within Nepal.</p></div></div>
+                    <div class="grid gap-5 sm:grid-cols-2">
+                        <div><label for="id_full_name" class="mb-2 block text-xs font-bold text-slate-700">Full Name</label>{{ delivery_form.full_name }}{% for error in delivery_form.full_name.errors %}<p class="mt-1 text-xs text-rose-700">{{ error }}</p>{% endfor %}</div>
+                        <div><label for="id_phone" class="mb-2 block text-xs font-bold text-slate-700">Phone Number</label>{{ delivery_form.phone }}{% for error in delivery_form.phone.errors %}<p class="mt-1 text-xs text-rose-700">{{ error }}</p>{% endfor %}</div>
+                        <div><label for="id_province" class="mb-2 block text-xs font-bold text-slate-700">Province</label>{{ delivery_form.province }}{% for error in delivery_form.province.errors %}<p class="mt-1 text-xs text-rose-700">{{ error }}</p>{% endfor %}</div>
+                        <div><label for="id_district" class="mb-2 block text-xs font-bold text-slate-700">District</label>{{ delivery_form.district }}{% for error in delivery_form.district.errors %}<p class="mt-1 text-xs text-rose-700">{{ error }}</p>{% endfor %}</div>
+                        <div><label for="id_municipality" class="mb-2 block text-xs font-bold text-slate-700">Municipality / Rural Municipality</label>{{ delivery_form.municipality }}{% for error in delivery_form.municipality.errors %}<p class="mt-1 text-xs text-rose-700">{{ error }}</p>{% endfor %}</div>
+                        <div><label for="id_ward" class="mb-2 block text-xs font-bold text-slate-700">Ward Number (1–35)</label>{{ delivery_form.ward }}{% for error in delivery_form.ward.errors %}<p class="mt-1 text-xs text-rose-700">{{ error }}</p>{% endfor %}</div>
+                        <div><label for="id_tole" class="mb-2 block text-xs font-bold text-slate-700">Tole / Street</label>{{ delivery_form.tole }}{% for error in delivery_form.tole.errors %}<p class="mt-1 text-xs text-rose-700">{{ error }}</p>{% endfor %}</div>
+                        <div><label for="id_landmark" class="mb-2 block text-xs font-bold text-slate-700">House No. / Landmark <span class="font-normal text-slate-400">(optional)</span></label>{{ delivery_form.landmark }}{% for error in delivery_form.landmark.errors %}<p class="mt-1 text-xs text-rose-700">{{ error }}</p>{% endfor %}</div>
+                        <label for="id_save_address" class="flex items-center gap-2 text-xs font-semibold text-slate-700 sm:col-span-2">{{ delivery_form.save_address }} Save this address for next time</label>
+                    </div>
+                    {{ location_hierarchy|json_script:"nepal-location-data" }}
+                </section>
+
+                <section class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-7">
+                    <div class="mb-6 flex items-center gap-3"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#fbf6e9] text-sm font-extrabold text-[#9a7727]">2</span><div><h2 class="text-lg font-extrabold text-[#064e45]">Payment Method</h2><p class="mt-0.5 text-xs text-slate-500">Choose how you would like to pay.</p></div></div>
+                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-[#b8d4cb] bg-[#f5f9f5] p-4 transition hover:bg-[#f1f7f1]"><input type="radio" name="payment_method" value="cod" {% if form_values.payment_method == 'cod' %}checked{% endif %} class="mt-0.5 h-4 w-4 accent-[#087466]"><span class="flex-1"><span class="block text-sm font-bold text-slate-800">Cash on Delivery</span><span class="mt-1 block text-xs leading-5 text-slate-500">Pay when your order is delivered.</span></span><span class="rounded-full bg-white px-2 py-1 text-[9px] font-bold text-[#087466]">Available</span></label>
+                    <div class="mt-3 flex items-start gap-3 rounded-xl border border-stone-200 bg-stone-50 p-4 text-slate-400"><input type="radio" disabled class="mt-0.5 h-4 w-4"><span><span class="block text-sm font-bold">Online Payment</span><span class="mt-1 block text-xs leading-5">Not available yet.</span></span></div>
+                </section>
+
+                <section class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-7"><label for="coupon-code" class="block text-sm font-bold text-[#064e45]">Coupon code <span class="font-normal text-slate-400">(optional)</span></label><p class="mt-1 text-xs text-slate-500">Apply an active coupon provided by MultiMart.</p><input id="coupon-code" name="coupon_code" type="text" maxlength="32" value="{{ form_values.coupon_code }}" autocomplete="off" class="mt-3 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm uppercase outline-none transition focus:border-[#087466] focus:ring-4 focus:ring-emerald-900/10 sm:max-w-sm"></section>
+            </div>
+
+            <aside class="lg:sticky lg:top-6">
+                <section class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
+                    <div class="flex items-center justify-between"><h2 class="text-lg font-extrabold text-[#064e45]">Your Order</h2><span class="rounded-full bg-[#f1f7f1] px-2.5 py-1 text-[10px] font-bold text-[#087466]">{{ cart_items|length }} item{{ cart_items|length|pluralize }}</span></div>
+                    <div class="mt-5 divide-y divide-stone-100">
+                        {% for item in cart_items %}
+                            <div class="flex items-start justify-between gap-3 py-3 first:pt-0"><div><p class="text-sm font-semibold text-slate-800">{{ item.product.name }}</p><p class="mt-1 text-xs text-slate-500">Qty {{ item.quantity }} &middot; Rs. {{ item.product.price }} each</p></div><p class="shrink-0 text-sm font-bold text-[#064e45]">Rs. {{ item.subtotal }}</p></div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-3 space-y-2 border-t border-stone-200 pt-4"><div class="flex items-center justify-between text-xs text-slate-500"><span>Subtotal</span><span>Rs. {{ subtotal }}</span></div>{% if discount_amount %}<div class="flex items-center justify-between text-xs font-semibold text-emerald-700"><span>Coupon{% if coupon %} · {{ coupon.code }}{% endif %}</span><span>- Rs. {{ discount_amount }}</span></div>{% endif %}<div class="flex items-center justify-between pt-1"><span class="font-bold text-slate-900">Total</span><span class="text-xl font-extrabold text-[#064e45]">Rs. {{ final_total|floatformat:2 }}</span></div></div>
+                    <button type="submit" class="mt-6 w-full rounded-xl bg-[#087466] px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#075e52] focus:outline-none focus:ring-2 focus:ring-[#087466] focus:ring-offset-2">Place Order</button>
+                </section>
+                <a href="{% url 'cart' %}" class="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-[#087466] hover:text-[#064e45]"><span aria-hidden="true">&larr;</span> Return to cart</a>
+            </aside>
+        </form>
+    </main>
+
+    <footer class="mt-10 bg-[#075e52] text-emerald-50"><div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8"><div><a href="/" class="text-sm font-extrabold text-white">MultiMart</a><p class="mt-1 text-[10px] text-emerald-100/80">Discover products from independent stores, all in one place.</p></div><p class="text-[10px] text-emerald-100/70">&copy; 2026 MultiMart. All rights reserved.</p></div></footer>
+    <script src="{% static 'js/checkout-address.js' %}" defer></script>
+</body>
+</html>

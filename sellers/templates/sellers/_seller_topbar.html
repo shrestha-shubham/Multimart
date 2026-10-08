@@ -1,0 +1,4 @@
+<header class="flex min-h-[62px] items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 sm:px-7 lg:px-9">
+    <div><p class="text-[10px] font-semibold uppercase text-slate-400">Seller workspace</p><p class="mt-0.5 text-xs font-semibold text-slate-600">{{ store.name|default:request.user.username }}</p></div>
+    <div class="flex items-center gap-2.5"><span class="hidden text-xs font-medium text-slate-600 sm:inline">Hi, {{ request.user.first_name|default:request.user.username }}</span><span class="grid h-8 w-8 place-items-center rounded-full bg-[#e9f5f1] text-xs font-bold text-[#087f7b]">{{ request.user.first_name|default:request.user.username|first|upper }}</span></div>
+</header>

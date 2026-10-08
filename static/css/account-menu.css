@@ -1,0 +1,18 @@
+.account-menu { position: relative; flex: 0 0 auto; }
+.account-menu > summary { list-style: none; }
+.account-menu > summary::-webkit-details-marker { display: none; }
+.account-menu-trigger { display: grid; width: 36px; height: 36px; place-items: center; border: 2px solid #d8ebe6; border-radius: 50%; background: #087f7b; color: #fff; cursor: pointer; font-size: 13px; font-weight: 800; }
+.account-menu-trigger:hover, .account-menu[open] .account-menu-trigger { box-shadow: 0 0 0 3px rgb(221 244 239 / 18%); }
+.account-menu-panel { position: absolute; z-index: 50; top: calc(100% + 10px); right: 0; width: min(290px, calc(100vw - 24px)); overflow: hidden; border: 1px solid #e2e8e6; border-radius: 12px; background: #fff; color: #263638; box-shadow: 0 12px 32px rgb(10 35 36 / 22%); }
+.account-menu-identity { display: flex; align-items: center; gap: 11px; padding: 15px; border-bottom: 1px solid #edf0ef; }
+.account-menu-avatar { display: grid; width: 36px; height: 36px; flex: 0 0 36px; place-items: center; border-radius: 50%; background: #dff3ee; color: #087f7b; font-size: 13px; font-weight: 800; }
+.account-menu-user { display: grid; min-width: 0; gap: 3px; }
+.account-menu-user strong, .account-menu-user span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-menu-user strong { color: #1e2e30; font-size: 12px; font-weight: 700; }
+.account-menu-user span { color: #687779; font-size: 10px; }
+.account-menu-item { display: flex; min-height: 39px; align-items: center; gap: 12px; padding: 9px 15px; color: #465457; font-size: 11px; font-weight: 500; text-decoration: none; }
+.account-menu-item > span { display: grid; width: 15px; place-items: center; color: #66777a; font-size: 15px; }
+.account-menu-item:hover, .account-menu-item:focus-visible { outline: none; background: #f1f8f6; color: #087f7b; }
+.account-menu-signout { border-top: 1px solid #edf0ef; }
+.account-menu-separator { height: 1px; margin-top: 4px; background: #edf0ef; }
+.account-menu-footer { padding: 10px 12px; background: #f7f5f0; color: #b66b2b; font-size: 10px; font-weight: 700; text-align: center; }
